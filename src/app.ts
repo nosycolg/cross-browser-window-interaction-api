@@ -23,7 +23,7 @@ export default class App {
 
       this.connectedUsers.set(socket.id, socket);
 
-      this.socketIo.emit("user_connected", Array.from(this.connectedUsers.keys()));
+      this.socketIo.emit("user_connected", Array.from(this.connectedUsers.keys()), socket.id);
 
       socket.on("disconnect", () => {
         
@@ -33,11 +33,11 @@ export default class App {
         this.socketIo.emit("users_connected", Array.from(this.connectedUsers.keys()));
       });
 
-      socket.on("alert", (userId) => {
+      socket.on("alert", (userId, camera) => {
         if (this.connectedUsers.has(userId)) {
           const userSocket = this.connectedUsers.get(userId);
           if (userSocket) {
-            userSocket.emit("alert", userId);
+            userSocket.emit("alert", userId, camera);
           }
         } else {
           console.log("Usuário não encontrado!");
